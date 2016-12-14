@@ -51,7 +51,7 @@ Public Sub SaveMessage(varSaveAsFileType As Variant)
   sPath = strFolderpath & "\"
   'Debug.Print sPath & sName
   'Other Options: https://msdn.microsoft.com/en-us/library/office/ff868727.aspx
-  oMail.SaveAs sPath & sName, varSaveAsFileType
+  oMail.SaveAs sPath & Left(sName, 50), varSaveAsFileType
    
   End If
   Next
@@ -65,6 +65,7 @@ Dim objOL As Outlook.Application
 Dim objMsg As Outlook.MailItem 'Object
 Dim objAttachments As Outlook.Attachments
 Dim objSelection As Outlook.Selection
+Dim dtDate As Date
 Dim i As Long
 Dim lngCount As Long
 Dim strFile As String
@@ -107,12 +108,15 @@ Call init
     strFile = objAttachments.Item(i).FileName
     varReallySave = MsgBox("Save " & strFile & "?", vbYesNo)
     
-    ' Combine with the path to the Temp folder.
-    strFile = strFolderpath & "\" & strFile
+    
     
     ' Save the attachment as a file.
     
     If varReallySave = 6 Then
+    
+    ' Combine with the path to the Temp folder.
+    dtDate = objMsg.ReceivedTime
+    strFile = strFolderpath & "\" & GetFilePrefix(dtDate) & "-" & strFile
       objAttachments.Item(i).SaveAsFile strFile
     End If
     
